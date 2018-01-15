@@ -1,0 +1,45 @@
+group 'CodeSample_GR'
+version '0.1-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.2.10'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+
+// Compile to Java 8 (default is java 6)
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+// Build executable fat jar
+jar {
+    manifest {
+        attributes 'Main-Class': 'HelloWorldKt'
+    }
+
+    // Include all dependencies in fat jar
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.guava:guava:18.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+
+    testCompile "junit:junit:4.12"
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.12.0'
+}
