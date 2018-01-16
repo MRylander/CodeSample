@@ -29,10 +29,24 @@ class LocalAppTest {
     }
 
     @Test
+    fun shouldSortUsingOptionOne() {
+        localApp.run(arrayOf("local", "option1", inputFile.canonicalPath))
+
+        verify(mockRecordService).getRecordsSortedByOption1()
+    }
+
+    @Test
     fun shouldSortUsingOptionTwo() {
         localApp.run(arrayOf("local", "Option2", inputFile.canonicalPath))
 
         verify(mockRecordService).getRecordsSortedByOption2()
+    }
+
+    @Test
+    fun shouldSortUsingOptionThree() {
+        localApp.run(arrayOf("local", "Option3", inputFile.canonicalPath))
+
+        verify(mockRecordService).getRecordsSortedByOption3()
     }
 
     private fun createInputFile(): File {

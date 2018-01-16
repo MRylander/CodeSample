@@ -2,6 +2,7 @@ package rylander.codesample.record
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
+import org.hamcrest.collection.IsIterableContainingInOrder
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -25,6 +26,39 @@ class RecordServiceTest {
         assertThat(firstGreaterThanSecond, greaterThan(0))
     }
 
+    @Test
+    fun shouldSortByGenderLexicographicallyAndThenByLastNameAdc() {
+        // Given
+        val femaleAAA = Record("AAA", "fn", "Female", "color", LocalDate.of(2000, 1, 1))
+        val femaleZZZ = femaleAAA.copy(lastName = "ZZZ")
+        val maleAAA = femaleAAA.copy(gender = "Male")
+        val maleZZZ = maleAAA.copy(lastName = "ZZZ")
+        val malemmm = maleAAA.copy(lastName = "mmm")
+
+        val unsortedList = listOf(femaleAAA, maleZZZ, maleAAA, femaleZZZ, malemmm)
+
+        // When
+        val sortedList = unsortedList.sortedWith(RecordService.SORT_GENDER_THEN_LAST_NAME_ASC)
+
+        // Then
+        assertThat(sortedList, IsIterableContainingInOrder.contains(femaleAAA, femaleZZZ, maleAAA, malemmm, maleZZZ))
+    }
+
+    @Test
+    fun shouldSortLastNameDec() {
+        // Given
+        val AAA = Record("AAA", "fn", "Female", "color", LocalDate.of(2000, 1, 1))
+        val ZZZ = AAA.copy(lastName = "ZZZ")
+        val ccc = AAA.copy(lastName = "ccc")
+
+        val unsortedList = listOf(AAA, ZZZ, ccc)
+
+        // When
+        val sortedList = unsortedList.sortedWith(RecordService.SORT_LAST_NAME_DEC)
+
+        // Then
+        assertThat(sortedList, IsIterableContainingInOrder.contains(ZZZ, ccc, AAA))
+    }
 
     @Test
     fun shouldParseAndPersist() {

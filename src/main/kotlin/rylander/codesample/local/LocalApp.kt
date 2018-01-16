@@ -32,7 +32,9 @@ class LocalApp(val recordService: RecordService = RecordService()) {
 
         // Print the data in the selected output format
         when (args[1].toLowerCase()) {
+            "option1" -> recordService.getRecordsSortedByOption1()
             "option2" -> recordService.getRecordsSortedByOption2()
+            "option3" -> recordService.getRecordsSortedByOption3()
             else -> {
                 println("Invalid outputFormat.")
                 emptyList()
