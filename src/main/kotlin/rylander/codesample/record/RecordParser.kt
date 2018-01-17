@@ -9,7 +9,7 @@ object RecordParser {
      */
     fun parse(line: String): Record? {
         return try {
-            val split = line.split("|")
+            val split = line.split("|", ",", " ").filter { it.isNotEmpty() }
             Record(
                     lastName = split[0].trim(),
                     firstName = split[1].trim(),

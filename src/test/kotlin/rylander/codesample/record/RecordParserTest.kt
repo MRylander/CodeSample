@@ -23,6 +23,52 @@ class RecordParserTest {
     }
 
     @Test
+    fun shouldParseRecordWithCommaDelimiters() {
+        val rawRecord = "LastName, FirstName, Gender, FavoriteColor, 1/1/2001"
+        val expectedRecord = Record(
+                lastName = "LastName",
+                firstName = "FirstName",
+                gender = "Gender",
+                favoriteColor = "FavoriteColor",
+                dateOfBirth = LocalDate.of(2001, 1, 1))
+
+        val record = RecordParser.parse(rawRecord)
+
+        assertThat(record, `is`(expectedRecord))
+    }
+
+    @Test
+    fun shouldParseRecordWithSpaceDelimiters() {
+        val rawRecord = "LastName FirstName Gender FavoriteColor 1/1/2001"
+        val expectedRecord = Record(
+                lastName = "LastName",
+                firstName = "FirstName",
+                gender = "Gender",
+                favoriteColor = "FavoriteColor",
+                dateOfBirth = LocalDate.of(2001, 1, 1))
+
+        val record = RecordParser.parse(rawRecord)
+
+        assertThat(record, `is`(expectedRecord))
+    }
+
+    @Test
+    fun shouldParseRecordWithOneOrMoreSpaceDelimiters() {
+        val rawRecord = "LastName      FirstName Gender FavoriteColor 1/1/2001"
+        val expectedRecord = Record(
+                lastName = "LastName",
+                firstName = "FirstName",
+                gender = "Gender",
+                favoriteColor = "FavoriteColor",
+                dateOfBirth = LocalDate.of(2001, 1, 1))
+
+        val record = RecordParser.parse(rawRecord)
+
+        assertThat(record, `is`(expectedRecord))
+    }
+
+
+    @Test
     fun shouldReturnNullWhenRecordIsMissingFields() {
         val rawRecord = "LastName"
 
