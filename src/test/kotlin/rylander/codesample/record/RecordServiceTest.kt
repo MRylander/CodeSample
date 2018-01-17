@@ -7,6 +7,10 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import rylander.codesample.record.RecordService.Companion.SORT_BIRTH_DATE_ASC
+import rylander.codesample.record.RecordService.Companion.SORT_GENDER_ASC
+import rylander.codesample.record.RecordService.Companion.SORT_GENDER_THEN_LAST_NAME_ASC
+import rylander.codesample.record.RecordService.Companion.SORT_LAST_NAME_DEC
+import rylander.codesample.record.RecordService.Companion.SORT_LAST_NAME_THEN_FIRST_NAME_ASC
 import rylander.codesample.safeEq
 import java.time.LocalDate
 
@@ -61,6 +65,38 @@ class RecordServiceTest {
     }
 
     @Test
+    fun shouldSortGenderAsc() {
+        // Given
+        val female = Record("AAA", "fn", "Female", "color", LocalDate.of(2000, 1, 1))
+        val male = female.copy(gender = "Male")
+        val other = female.copy(gender = "other")
+
+        val unsortedList = listOf(male, female, other)
+
+        // When
+        val sortedList = unsortedList.sortedWith(RecordService.SORT_GENDER_ASC)
+
+        // Then
+        assertThat(sortedList, IsIterableContainingInOrder.contains(female, male, other))
+    }
+
+    @Test
+    fun shouldSortLastNameThenFirstNameAsc() {
+        // Given
+        val georgeWashington = Record("Washington", "George", "na", "na", LocalDate.of(2000, 1, 1))
+        val janeDoe = georgeWashington.copy(lastName = "Doe", firstName = "Jane")
+        val johnDoe = janeDoe.copy(firstName = "John")
+
+        val unsortedList = listOf(johnDoe, georgeWashington, janeDoe)
+
+        // When
+        val sortedList = unsortedList.sortedWith(RecordService.SORT_LAST_NAME_THEN_FIRST_NAME_ASC)
+
+        // Then
+        assertThat(sortedList, IsIterableContainingInOrder.contains(janeDoe, johnDoe, georgeWashington))
+    }
+
+    @Test
     fun shouldParseAndPersist() {
         val mockRepository = mock(RecordRepository::class.java)
         val recordService = RecordService(mockRepository)
@@ -72,6 +108,19 @@ class RecordServiceTest {
     }
 
     @Test
+    fun shouldGetRecordsSortedByOption1() {
+        val mockRepository = mock(RecordRepository::class.java)
+        val recordService = RecordService(mockRepository)
+
+        recordService.getRecordsSortedByOption1()
+
+        verify(mockRepository).getRecordsSorted(safeEq(SORT_GENDER_THEN_LAST_NAME_ASC))
+    }
+
+    /**
+     * This all tests the getSortedByBirthDate method.
+     */
+    @Test
     fun shouldGetRecordsSortedByOption2() {
         val mockRepository = mock(RecordRepository::class.java)
         val recordService = RecordService(mockRepository)
@@ -79,5 +128,35 @@ class RecordServiceTest {
         recordService.getRecordsSortedByOption2()
 
         verify(mockRepository).getRecordsSorted(safeEq(SORT_BIRTH_DATE_ASC))
+    }
+
+    @Test
+    fun shouldGetRecordsSortedByOption3() {
+        val mockRepository = mock(RecordRepository::class.java)
+        val recordService = RecordService(mockRepository)
+
+        recordService.getRecordsSortedByOption3()
+
+        verify(mockRepository).getRecordsSorted(safeEq(SORT_LAST_NAME_DEC))
+    }
+
+    @Test
+    fun shouldGetRecordsSortedByGender() {
+        val mockRepository = mock(RecordRepository::class.java)
+        val recordService = RecordService(mockRepository)
+
+        recordService.getSortedByGender()
+
+        verify(mockRepository).getRecordsSorted(safeEq(SORT_GENDER_ASC))
+    }
+
+    @Test
+    fun shouldGetSortedByLastNameThenFirstName() {
+        val mockRepository = mock(RecordRepository::class.java)
+        val recordService = RecordService(mockRepository)
+
+        recordService.getSortedByLastNameThenFirstName()
+
+        verify(mockRepository).getRecordsSorted(safeEq(SORT_LAST_NAME_THEN_FIRST_NAME_ASC))
     }
 }

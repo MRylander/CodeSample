@@ -24,6 +24,30 @@ Example: This example would parse the contents of 'testData-pipes1.txt' located 
     
     # Run the app
     java -jar build/libs/CodeSample_GR-0.1-SNAPSHOT.jar local option2 testData/testData-pipes1.txt
+    
+## To run the REST app   
+
+The REST app is run by executing the jar with the `server` mode option
+
+    java -jar build/libs/CodeSample_GR-0.1-SNAPSHOT.jar [modeOption] 
+    
+Example:
+
+    # From the root of the project repo
+    # Compile Executable Jar
+    gradlew jar
+    
+    # Run the app
+    java -jar build/libs/CodeSample_GR-0.1-SNAPSHOT.jar server
+    
+    # You should then be able to access the REST endpoints at localhost:8080
+    
+### REST Endpoints
+
+* POST /records - Post a single data line in any of the 3 formats supported by your existing code
+* GET /records/gender - returns records sorted by gender
+* GET /records/birthdate - returns records sorted by birthdate
+* GET /records/name - returns records sorted by name
 
 ## Assumptions
 * Java 8 is setup and available.
@@ -36,3 +60,4 @@ Example: This example would parse the contents of 'testData-pipes1.txt' located 
 * The input records are valid and well formatted.
 * The order of the fields on the records will always be: LastName, FirstName, Gender, FavoriteColor, DateOfBirth 
 * DateOfBirth is in the form M/D/YYYY within the input records
+* "Sorted by name" means that the records with be sorted lexicographically by lastName and then sorted by firstName. 

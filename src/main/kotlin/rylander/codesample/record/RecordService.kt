@@ -4,10 +4,16 @@ class RecordService(val recordRepository: RecordRepository = RecordRepository())
     companion object {
         val SORT_BIRTH_DATE_ASC = Comparator<Record> { r1, r2 -> r1.dateOfBirth.compareTo(r2.dateOfBirth) }
         val SORT_LAST_NAME_DEC = Comparator<Record> { r1, r2 -> r2.lastName.compareTo(r1.lastName, true) }
+        val SORT_LAST_NAME_THEN_FIRST_NAME_ASC = Comparator<Record> { r1, r2 ->
+            10 * Integer.signum(r1.lastName.compareTo(r2.lastName, true)) +
+                    Integer.signum(r1.firstName.compareTo(r2.firstName, true))
+        }
         val SORT_GENDER_THEN_LAST_NAME_ASC = Comparator<Record> { r1, r2 ->
             10 * Integer.signum(r1.gender.compareTo(r2.gender, true)) +
                     Integer.signum(r1.lastName.compareTo(r2.lastName, true))
         }
+        val SORT_GENDER_ASC = Comparator<Record> { r1, r2 -> r1.gender.compareTo(r2.gender, true) }
+
     }
 
     fun parseAndPersistRecord(rawRecordInput: String) {
@@ -27,6 +33,10 @@ class RecordService(val recordRepository: RecordRepository = RecordRepository())
      * This method return all the records sorted by `option2`. Option2 is sorted by birth date, ascending.
      */
     fun getRecordsSortedByOption2(): List<Record> {
+        return getSortedByBirthDate()
+    }
+
+    fun getSortedByBirthDate(): List<Record> {
         return recordRepository.getRecordsSorted(SORT_BIRTH_DATE_ASC)
     }
 
@@ -36,4 +46,13 @@ class RecordService(val recordRepository: RecordRepository = RecordRepository())
     fun getRecordsSortedByOption3(): List<Record> {
         return recordRepository.getRecordsSorted(SORT_LAST_NAME_DEC)
     }
+
+    fun getSortedByGender(): List<Record> {
+        return recordRepository.getRecordsSorted(SORT_GENDER_ASC)
+    }
+
+    fun getSortedByLastNameThenFirstName(): List<Record> {
+        return recordRepository.getRecordsSorted(SORT_LAST_NAME_THEN_FIRST_NAME_ASC)
+    }
+
 }
